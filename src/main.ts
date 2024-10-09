@@ -35,11 +35,10 @@ counterDisplay.innerHTML = `${counter} ${unitLabel}`;
 app.append(counterDisplay);
 
 // Add event listener to the button for click events
-button.addEventListener('click', () => {
-    counter += 1; // Increment the counter
-    counterDisplay.innerHTML = `${counter} ${unitLabel}`; // Update the display
-    console.log(`Counter increased to ${counter} ${unitLabel}`);
+button.addEventListener("click", () => {
+  counter += 1; // Increment the counter
+  counterDisplay.innerHTML = `${counter} ${unitLabel}`; // Update the display
+  console.log(`Counter increased to ${counter} ${unitLabel}`);
 });
 
 console.log("Counter and button are ready!");
-
