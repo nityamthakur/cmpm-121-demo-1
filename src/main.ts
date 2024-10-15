@@ -35,7 +35,7 @@ button.addEventListener('click', () => {
     counter += 1; // Increment the counter manually
     counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`; 
     console.log(`Counter increased to ${counter} ${unitLabel}`);
-    updateButtonEnableState(); // Check if upgrade is available
+    updateButtonEnableState(); // Check if upgrades are available
 });
 
 // Create a div to display the current growth rate
@@ -48,11 +48,11 @@ function updateGrowthRateDisplay() {
     growthRateDisplay.innerHTML = `Growth Rate: ${growthRate.toFixed(1)} ${unitLabel}/sec`;
 }
 
-// Map to store the upgrades with initial zero purchases
+// Map to store the upgrades with their base properties
 const purchases = {
-    A: { cost: 10, rate: 0.1, count: 0 },
-    B: { cost: 100, rate: 2.0, count: 0 },
-    C: { cost: 1000, rate: 50.0, count: 0 }
+    A: { baseCost: 10, cost: 10, rate: 0.1, count: 0 },
+    B: { baseCost: 100, cost: 100, rate: 2.0, count: 0 },
+    C: { baseCost: 1000, cost: 1000, rate: 50.0, count: 0 }
 };
 
 // Create a div to represent purchases
@@ -71,7 +71,7 @@ app.append(purchaseDisplay);
 function createUpgradeButton(itemKey: keyof typeof purchases, label: string) {
     const button = document.createElement("button");
     const item = purchases[itemKey];
-    button.innerHTML = `${label} (Cost: ${item.cost})`;
+    button.innerHTML = `${label} (Cost: ${item.cost.toFixed(2)})`;
     button.style.fontSize = '1.2rem';
     button.style.margin = '5px';
     button.disabled = true; // Initially disabled
@@ -79,12 +79,15 @@ function createUpgradeButton(itemKey: keyof typeof purchases, label: string) {
     button.addEventListener('click', () => {
         if (counter >= item.cost) {
             counter -= item.cost;
+            item.cost *= 1.15; // Increase the price by 15%
             growthRate += item.rate;
             item.count += 1;
             counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
+            button.innerHTML = `${label} (Cost: ${item.cost.toFixed(2)})`; // Update button cost
             console.log(`Purchased ${label}. New growth rate: ${growthRate.toFixed(1)} per sec.`);
             updateGrowthRateDisplay();
             updatePurchaseDisplay();
+            updateButtonEnableState(); // Refresh button state
         }
     });
 
@@ -130,4 +133,4 @@ requestAnimationFrame(updateCounter);
 updateGrowthRateDisplay();
 
 // Initial log to confirm setup
-console.log("Counter with multiple upgrades and status display is ready!");
+console.log("Counter with multiple upgraded price increase is ready!");
