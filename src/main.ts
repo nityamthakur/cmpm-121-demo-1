@@ -44,12 +44,24 @@ button.addEventListener("click", () => {
 
 console.log("Counter and button are ready!");
 
-// Step 3: Implement automatic clicks using setInterval
-setInterval(() => {
-  counter += 1; // Increment the counter automatically
-  counterDisplay.innerHTML = `${counter} ${unitLabel}`; // Update the display
-  console.log(`Automatic increment to ${counter} ${unitLabel}`);
-}, 1000); // 1000ms = 1 second
+// Step 4: Implement continuous growth using requestAnimationFrame
+let lastTime = performance.now();
+const unitsPerSecond = 1;
 
-// Log to show the setup is complete
-console.log("Counter with automatic clicking is ready!");
+function updateCounter(currentTime: number) {
+    // Calculate the time elapsed since the last frame
+    const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+    counter += unitsPerSecond * deltaTime; // Increment counter based on elapsed time
+    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`; // Update display
+
+    lastTime = currentTime; // Update lastTime for the next cycle
+
+    // Request the next animation frame
+    requestAnimationFrame(updateCounter);
+}
+
+// Start the animation loop
+requestAnimationFrame(updateCounter);
+
+// Log to confirm everything is ready
+console.log("Counter with continuous growth and button click is ready!");
