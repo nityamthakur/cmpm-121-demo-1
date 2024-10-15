@@ -2,66 +2,83 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
+// Set the game name and title
 const gameName = "My NEW amazing game";
 document.title = gameName;
 
+// Create and append a header
 const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// Step 1: Create a new button element
+// Step 1: Create a fun button element
 const button = document.createElement("button");
-
-// Set an emoji as its content
-button.innerHTML = "🍪"; // Feel free to change it!
-
-// Apply styles
-button.className = "fun-button";
-button.style.fontSize = "2rem";
-button.style.padding = "10px 20px";
+button.innerHTML = '🌟'; 
+button.className = 'fun-button';
+button.style.fontSize = '2rem';
+button.style.padding = '10px 20px';
 
 // Append the button to the app div
 app.append(button);
 
-// Log to show the button has been added
-console.log("Button added to the page!");
-
-//Step 2
+// Step 2 & 3: Initialize the counter
 let counter: number = 0;
 
 // Create a div to display the counter
 const counterDisplay = document.createElement("div");
-const unitLabel = "cookies";
+const unitLabel = "stars";
 counterDisplay.innerHTML = `${counter} ${unitLabel}`;
 app.append(counterDisplay);
 
 // Add event listener to the button for click events
-button.addEventListener("click", () => {
-  counter += 1; // Increment the counter
-  counterDisplay.innerHTML = `${counter} ${unitLabel}`; // Update the display
-  console.log(`Counter increased to ${counter} ${unitLabel}`);
+button.addEventListener('click', () => {
+    counter += 1; // Increment the counter manually
+    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`; 
+    console.log(`Counter increased to ${counter} ${unitLabel}`);
+    updateUpgradeButton(); // Check if upgrade is available
 });
-
-console.log("Counter and button are ready!");
 
 // Step 4: Implement continuous growth using requestAnimationFrame
 let lastTime = performance.now();
-const unitsPerSecond = 1;
+let growthRate = 0; // Default growth rate to zero
 
 function updateCounter(currentTime: number) {
-    // Calculate the time elapsed since the last frame
-    const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
-    counter += unitsPerSecond * deltaTime; // Increment counter based on elapsed time
-    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`; // Update display
+    const deltaTime = (currentTime - lastTime) / 1000;
+    counter += growthRate * deltaTime; // Increment based on growthRate
+    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
 
-    lastTime = currentTime; // Update lastTime for the next cycle
+    lastTime = currentTime;
 
-    // Request the next animation frame
+    updateUpgradeButton(); // Ensure button enables/disables correctly
+
     requestAnimationFrame(updateCounter);
 }
 
-// Start the animation loop
 requestAnimationFrame(updateCounter);
 
-// Log to confirm everything is ready
-console.log("Counter with continuous growth and button click is ready!");
+// Step 5: Adding purchasable upgrade
+const upgradeButton = document.createElement("button");
+upgradeButton.innerHTML = 'Buy Upgrade 🚀';
+upgradeButton.style.fontSize = '2rem';
+upgradeButton.style.padding = '10px 20px';
+upgradeButton.disabled = true; // Initially disabled
+
+upgradeButton.addEventListener('click', () => {
+    if (counter >= 10) { // Requires at least 10 units
+        counter -= 10; // Deducts 10 units
+        growthRate += 1; // Increments growth rate
+        console.log(`Purchased upgrade! New growth rate: ${growthRate} per sec.`);
+    }
+    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
+    updateUpgradeButton(); // Update button state
+});
+
+app.append(upgradeButton);
+
+// Helper function to update upgrade button state
+function updateUpgradeButton() {
+    upgradeButton.disabled = counter < 10;
+}
+
+// Initial log to confirm complete setup
+console.log("Counter with upgrade purchasing is ready!");
