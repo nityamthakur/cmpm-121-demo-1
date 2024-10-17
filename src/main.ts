@@ -3,7 +3,7 @@ import "./style.css";
 const app: HTMLDivElement = document.querySelector("#app")!;
 
 // Set the game name and title
-const gameName = "My NEW amazing game";
+const gameName = "Casino Clicker";
 document.title = gameName;
 
 // Create and append a header
@@ -11,82 +11,82 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// Step 1: Create a fun button element
+// Create the main button as Casino Chip
 const button = document.createElement("button");
-button.innerHTML = '🌟'; 
-button.className = 'fun-button';
+button.innerHTML = '🎲 Click for Chips'; 
+button.className = 'chip-button';
 button.style.fontSize = '2rem';
-button.style.padding = '10px 20px';
+button.style.padding = '20px 40px';
 
-// Append the button to the app div
+// Append the casino chip button to the app div
 app.append(button);
 
-// Step 2 & 3: Initialize the counter
-let counter: number = 0;
+// Initialize the counter for chips
+let chipCounter: number = 0;
 
-// Create a div to display the counter
+// Create a div to display the chip counter
 const counterDisplay = document.createElement("div");
-const unitLabel = "stars";
-counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
+const unitLabel = "chips";
+counterDisplay.innerHTML = `${chipCounter.toFixed(2)} ${unitLabel}`;
 app.append(counterDisplay);
 
 // Add event listener to the button for click events
 button.addEventListener('click', () => {
-    counter += 1; // Increment the counter manually
-    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`; 
-    console.log(`Counter increased to ${counter} ${unitLabel}`);
-    updateButtonEnableState(); // Check if upgrades are available
+    chipCounter += 1; // Increment the chip counter manually
+    counterDisplay.innerHTML = `${chipCounter.toFixed(2)} ${unitLabel}`;
+    console.log(`Chips increased to ${chipCounter} ${unitLabel}`);
+    updateButtonEnableState(); // Check if games are available
 });
 
-// Create a div to display the current growth rate
+// Create a div to display the current chip growth rate
 let growthRate: number = 0;
 const growthRateDisplay = document.createElement("div");
 app.append(growthRateDisplay);
 
-// Update the growth rate view
+// Update the growth rate display
 function updateGrowthRateDisplay() {
-    growthRateDisplay.innerHTML = `Growth Rate: ${growthRate.toFixed(1)} ${unitLabel}/sec`;
+    growthRateDisplay.innerHTML = `Earnings Rate: ${growthRate.toFixed(1)} ${unitLabel}/sec`;
 }
 
-// Map to store the upgrades with their base properties
-const purchases = {
-    A: { baseCost: 10, cost: 10, rate: 0.1, count: 0 },
-    B: { baseCost: 100, cost: 100, rate: 2.0, count: 0 },
-    C: { baseCost: 1000, cost: 1000, rate: 50.0, count: 0 }
+// Map to store the games with their properties
+const games = {
+    Slots: { baseCost: 10, cost: 10, rate: 0.1, count: 0 },
+    Poker: { baseCost: 100, cost: 100, rate: 2.0, count: 0 },
+    Roulette: { baseCost: 1000, cost: 1000, rate: 50.0, count: 0 }
 };
 
-// Create a div to represent purchases
-const purchaseDisplay = document.createElement("div");
-const updatePurchaseDisplay = () => {
-    purchaseDisplay.innerHTML = `
-        <div>Item A: ${purchases.A.count} purchased</div>
-        <div>Item B: ${purchases.B.count} purchased</div>
-        <div>Item C: ${purchases.C.count} purchased</div>
+// Create a display to show games played
+const gameDisplay = document.createElement("div");
+const updateGameDisplay = () => {
+    gameDisplay.innerHTML = `
+        <div>Slots played: ${games.Slots.count}</div>
+        <div>Poker played: ${games.Poker.count}</div>
+        <div>Roulette played: ${games.Roulette.count}</div>
     `;
 };
-updatePurchaseDisplay();
-app.append(purchaseDisplay);
+updateGameDisplay();
+app.append(gameDisplay);
 
-// Function to create an upgrade button
-function createUpgradeButton(itemKey: keyof typeof purchases, label: string) {
+// Function to create a game button
+function createGameButton(gameKey: keyof typeof games, label: string) {
     const button = document.createElement("button");
-    const item = purchases[itemKey];
-    button.innerHTML = `${label} (Cost: ${item.cost.toFixed(2)})`;
+    const game = games[gameKey];
+    button.innerHTML = `${label} (Play Cost: ${game.cost.toFixed(2)})`;
     button.style.fontSize = '1.2rem';
     button.style.margin = '5px';
     button.disabled = true; // Initially disabled
 
     button.addEventListener('click', () => {
-        if (counter >= item.cost) {
-            counter -= item.cost;
-            item.cost *= 1.15; // Increase the price by 15%
-            growthRate += item.rate;
-            item.count += 1;
-            counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
-            button.innerHTML = `${label} (Cost: ${item.cost.toFixed(2)})`; // Update button cost
-            console.log(`Purchased ${label}. New growth rate: ${growthRate.toFixed(1)} per sec.`);
+        if (chipCounter >= game.cost) {
+            chipCounter -= game.cost;
+            game.cost *= 1.15; // Increase the play cost by 15%
+            growthRate += game.rate;
+            game.count += 1;
+            counterDisplay.innerHTML = `${chipCounter.toFixed(2)} ${unitLabel}`;
+            button.innerHTML = `${label} (Play Cost: ${game.cost.toFixed(2)})`; // Update button cost
+            console.log(`Played ${label}. New earnings rate: ${growthRate.toFixed(1)} ${unitLabel}/sec.`);
             updateGrowthRateDisplay();
-            updatePurchaseDisplay();
+            updateGameDisplay();
             updateButtonEnableState(); // Refresh button state
         }
     });
@@ -96,19 +96,19 @@ function createUpgradeButton(itemKey: keyof typeof purchases, label: string) {
     return button;
 }
 
-// Create upgrade buttons for items A, B, and C
-const upgradeButtons = {
-    A: createUpgradeButton('A', 'Upgrade A 🚀'),
-    B: createUpgradeButton('B', 'Upgrade B 🚀'),
-    C: createUpgradeButton('C', 'Upgrade C 🚀')
+// Create game buttons for Slots, Poker, and Roulette
+const gameButtons = {
+    Slots: createGameButton('Slots', 'Play Slots 🎰'),
+    Poker: createGameButton('Poker', 'Play Poker ♠️'),
+    Roulette: createGameButton('Roulette', 'Play Roulette 🎡')
 };
 
-// Function to update enable/disable state of upgrade buttons
+// Function to update enable/disable state of game buttons
 function updateButtonEnableState() {
-    for (const key in upgradeButtons) {
-        const button = upgradeButtons[key as keyof typeof upgradeButtons];
-        const item = purchases[key as keyof typeof purchases];
-        button.disabled = counter < item.cost;
+    for (const key in gameButtons) {
+        const button = gameButtons[key as keyof typeof gameButtons];
+        const game = games[key as keyof typeof games];
+        button.disabled = chipCounter < game.cost;
     }
 }
 
@@ -117,8 +117,8 @@ let lastTime = performance.now();
 
 function updateCounter(currentTime: number) {
     const deltaTime = (currentTime - lastTime) / 1000;
-    counter += growthRate * deltaTime;
-    counterDisplay.innerHTML = `${counter.toFixed(2)} ${unitLabel}`;
+    chipCounter += growthRate * deltaTime;
+    counterDisplay.innerHTML = `${chipCounter.toFixed(2)} ${unitLabel}`;
 
     lastTime = currentTime;
 
@@ -132,5 +132,5 @@ requestAnimationFrame(updateCounter);
 // Start with the growth rate display
 updateGrowthRateDisplay();
 
-// Initial log to confirm setup
-console.log("Counter with multiple upgraded price increase is ready!");
+// Log to confirm setup
+console.log("Casino Clicker with consistent theme is ready!");
