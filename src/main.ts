@@ -1,5 +1,19 @@
 import "./style.css";
 
+interface GameItem {
+  name: string;
+  emoji: string;
+  playCost: number;
+  earningsRate: number;
+  count?: number;
+}
+
+const availableItems: GameItem[] = [
+  { name: "Slots", emoji: "🎰", playCost: 10, earningsRate: 0.1 },
+  { name: "Poker", emoji: "♠️", playCost: 100, earningsRate: 2 },
+  { name: "Roulette", emoji: "🎡", playCost: 1000, earningsRate: 50 }
+];
+
 const app: HTMLDivElement = document.querySelector("#app")!;
 
 // Set the game name and title
@@ -48,68 +62,54 @@ function updateGrowthRateDisplay() {
     growthRateDisplay.innerHTML = `Earnings Rate: ${growthRate.toFixed(1)} ${unitLabel}/sec`;
 }
 
-// Map to store the games with their properties
-const games = {
-    Slots: { baseCost: 10, cost: 10, rate: 0.1, count: 0 },
-    Poker: { baseCost: 100, cost: 100, rate: 2.0, count: 0 },
-    Roulette: { baseCost: 1000, cost: 1000, rate: 50.0, count: 0 }
-};
-
-// Create a display to show games played
+// Initialize the game display
 const gameDisplay = document.createElement("div");
-const updateGameDisplay = () => {
-    gameDisplay.innerHTML = `
-        <div>Slots played: ${games.Slots.count}</div>
-        <div>Poker played: ${games.Poker.count}</div>
-        <div>Roulette played: ${games.Roulette.count}</div>
-    `;
-};
-updateGameDisplay();
 app.append(gameDisplay);
 
-// Function to create a game button
-function createGameButton(gameKey: keyof typeof games, label: string) {
+// Function to update all games display and button states
+function updateAllDisplays() {
+    updateGrowthRateDisplay();
+    gameDisplay.innerHTML = '';
+    availableItems.forEach((item) => {
+        const itemDisplay = document.createElement('div');
+        itemDisplay.innerText = `${item.emoji} ${item.name} played: ${item.count || 0}`;
+        gameDisplay.append(itemDisplay);
+    });
+}
+
+// Initialize item properties and create buttons dynamically
+availableItems.forEach(item => {
+    item.count = 0; // Initialize count to zero
+
     const button = document.createElement("button");
-    const game = games[gameKey];
-    button.innerHTML = `${label} (Play Cost: ${game.cost.toFixed(2)})`;
+    button.innerHTML = `Play ${item.name} ${item.emoji} (Cost: ${item.playCost.toFixed(2)})`;
     button.style.fontSize = '1.2rem';
     button.style.margin = '5px';
     button.disabled = true; // Initially disabled
 
     button.addEventListener('click', () => {
-        if (chipCounter >= game.cost) {
-            chipCounter -= game.cost;
-            game.cost *= 1.15; // Increase the play cost by 15%
-            growthRate += game.rate;
-            game.count += 1;
+        if (chipCounter >= item.playCost) {
+            chipCounter -= item.playCost;
+            item.playCost *= 1.15; // Increase the play cost by 15%
+            growthRate += item.earningsRate;
+            item.count! += 1;
             counterDisplay.innerHTML = `${chipCounter.toFixed(2)} ${unitLabel}`;
-            button.innerHTML = `${label} (Play Cost: ${game.cost.toFixed(2)})`; // Update button cost
-            console.log(`Played ${label}. New earnings rate: ${growthRate.toFixed(1)} ${unitLabel}/sec.`);
-            updateGrowthRateDisplay();
-            updateGameDisplay();
+            button.innerHTML = `Play ${item.name} ${item.emoji} (Cost: ${item.playCost.toFixed(2)})`; // Update button cost
+            console.log(`Played ${item.name}. New earnings rate: ${growthRate.toFixed(1)} ${unitLabel}/sec.`);
+            updateAllDisplays();
             updateButtonEnableState(); // Refresh button state
         }
     });
 
     app.append(button);
-    
-    return button;
-}
-
-// Create game buttons for Slots, Poker, and Roulette
-const gameButtons = {
-    Slots: createGameButton('Slots', 'Play Slots 🎰'),
-    Poker: createGameButton('Poker', 'Play Poker ♠️'),
-    Roulette: createGameButton('Roulette', 'Play Roulette 🎡')
-};
+});
 
 // Function to update enable/disable state of game buttons
 function updateButtonEnableState() {
-    for (const key in gameButtons) {
-        const button = gameButtons[key as keyof typeof gameButtons];
-        const game = games[key as keyof typeof games];
-        button.disabled = chipCounter < game.cost;
-    }
+    const buttons = document.querySelectorAll(`button`);
+    availableItems.forEach((item, index) => {
+        buttons[index + 1].disabled = chipCounter < item.playCost;
+    });
 }
 
 // Step 4: Implement continuous growth using requestAnimationFrame
@@ -130,7 +130,7 @@ function updateCounter(currentTime: number) {
 requestAnimationFrame(updateCounter);
 
 // Start with the growth rate display
-updateGrowthRateDisplay();
+updateAllDisplays();
 
 // Log to confirm setup
-console.log("Casino Clicker with consistent theme is ready!");
+console.log("Casino Clicker with data-driven design and emojis is ready!");
