@@ -5,13 +5,16 @@ interface GameItem {
   emoji: string;
   playCost: number;
   earningsRate: number;
+  description: string;
   count?: number;
 }
 
 const availableItems: GameItem[] = [
-  { name: "Slots", emoji: "🎰", playCost: 10, earningsRate: 0.1 },
-  { name: "Poker", emoji: "♠️", playCost: 100, earningsRate: 2 },
-  { name: "Roulette", emoji: "🎡", playCost: 1000, earningsRate: 50 }
+  { name: "Slots", emoji: "🎰", playCost: 10, earningsRate: 0.1, description: "Spin to win small and often with the Slots." },
+  { name: "Poker", emoji: "♠️", playCost: 100, earningsRate: 2, description: "Play your hands smartly in Poker for steady returns." },
+  { name: "Roulette", emoji: "🎡", playCost: 1000, earningsRate: 50, description: "Risk it all on Roulette for a big spin-up." },
+  { name: "Blackjack", emoji: "🃏", playCost: 5000, earningsRate: 120, description: "Beat the dealer in Blackjack for impressive winnings." },
+  { name: "Baccarat", emoji: "🎴", playCost: 20000, earningsRate: 500, description: "A luxurious gamble, Baccarat offers the highest stakes and returns." }
 ];
 
 const app: HTMLDivElement = document.querySelector("#app")!;
@@ -72,7 +75,7 @@ function updateAllDisplays() {
     gameDisplay.innerHTML = '';
     availableItems.forEach((item) => {
         const itemDisplay = document.createElement('div');
-        itemDisplay.innerText = `${item.emoji} ${item.name} played: ${item.count || 0}`;
+        itemDisplay.innerText = `${item.emoji} ${item.name}: ${item.count || 0} played - ${item.description}`;
         gameDisplay.append(itemDisplay);
     });
 }
@@ -133,4 +136,4 @@ requestAnimationFrame(updateCounter);
 updateAllDisplays();
 
 // Log to confirm setup
-console.log("Casino Clicker with data-driven design and emojis is ready!");
+console.log("Casino Clicker fully expanded with additional games and descriptions!");
